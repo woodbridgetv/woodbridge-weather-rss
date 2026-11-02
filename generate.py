@@ -68,7 +68,7 @@ for date, data in sorted(days.items())[:7]:
     description = f'{conditions} | High {high} | Low {low}'
 
     item = ET.SubElement(channel, "item")
-    ET.SubElement(item, "title").text = f"WOODBRIDGE {title}"
+    ET.SubElement(item, "title").text = title
     ET.SubElement(item, "description").text = description
     ET.SubElement(item, "guid").text = f"woodbridge-weather-{date.isoformat()}"
 
