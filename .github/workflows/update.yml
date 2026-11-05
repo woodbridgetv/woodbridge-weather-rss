@@ -24,11 +24,13 @@ jobs:
 
       - name: Generate weather RSS
         run: python generate.py
-
+      - name: Generate combined community RSS
+        run: python combine.py
+        
       - name: Publish updated forecast
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/feed.xml
+          git add docs/feed.xml docs/community-feed.xml
           git diff --cached --quiet || git commit -m "Update Woodbridge weather"
           git push
