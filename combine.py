@@ -47,12 +47,24 @@ if history_channel is None:
 
 history_items = history_channel.findall("item")
 
-if not history_items:
-    raise ValueError("History RSS feed contains no items.")
+# Add only completed history stories.
+# Skip temporary research placeholders.
+added_history = 0
 
-# Add the history items after the weather items
 for item in history_items:
-    channel.append(deepcopy(item))
+    title = item.findtext("title", "").strip()
+    description = item.findtext("description", "").strip()
+    guid = item.findtext("guid", "").strip()
+
+    is_pending = (
+        "being researched" in description.lower()
+        or "will be added" in description.lower()
+        or "#pending-" in guid.lower()
+    )
+
+    if not is_pending:
+        channel.append(deepcopy(item))
+        added_history += 1
 
 # Save the combined feed
 Path("docs").mkdir(exist_ok=True)
@@ -66,5 +78,5 @@ ET.ElementTree(rss).write(
 print(
     f"Combined feed generated with "
     f"{len(weather_channel.findall('item'))} weather items "
-    f"and {len(history_items)} history items."
+    f"and {added_history} completed history items."
 )
