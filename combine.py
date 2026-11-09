@@ -92,14 +92,14 @@ for item in history_items:
     )
 
     if not is_pending:
-    history_item = deepcopy(item)
+            history_item = deepcopy(item)
 
-    title_element = history_item.find("title")
-    if title_element is not None:
-        title_element.text = "📜 " + (title_element.text or "").strip()
+        title_element = history_item.find("title")
+        if title_element is not None:
+            title_element.text = "📜 " + (title_element.text or "").strip()
 
-    channel.append(history_item)
-    added_history += 1
+        channel.append(history_item)
+        added_history += 1
 
 # Save the combined feed
 Path("docs").mkdir(exist_ok=True)
