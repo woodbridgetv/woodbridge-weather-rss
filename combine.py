@@ -92,9 +92,9 @@ for item in history_items:
     )
 
     if not is_pending:
-            history_item = deepcopy(item)
-
+        history_item = deepcopy(item)
         title_element = history_item.find("title")
+
         if title_element is not None:
             title_element.text = "📜 " + (title_element.text or "").strip()
 
