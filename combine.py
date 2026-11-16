@@ -1,29 +1,10 @@
 
+
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from copy import deepcopy
 from urllib.request import urlopen
-def weather_icon(description):
-    text = description.lower()
 
-    if any(word in text for word in ("thunder", "storm")):
-        return "⛈"
-    if any(word in text for word in ("snow", "sleet", "flurr")):
-        return "❄"
-    if any(word in text for word in ("rain", "shower", "drizzle")):
-        return "🌧"
-    if any(word in text for word in ("fog", "mist")):
-        return "🌫"
-    if "mostly sunny" in text or "partly sunny" in text:
-        return "⛅"
-    if any(word in text for word in ("mostly cloudy", "cloudy")):
-        return "☁"
-    if "partly" in text:
-        return "⛅"
-    if "sunny" in text or "clear" in text:
-        return "☀"
-
-    return "🌤"
 WEATHER_FILE = Path("docs/feed.xml")
 OUTPUT_FILE = Path("docs/community-feed.xml")
 
@@ -51,17 +32,9 @@ ET.SubElement(channel, "description").text = (
 )
 ET.SubElement(channel, "language").text = "en-us"
 
-# Copy all weather items
+# Copy all weather items without adding emojis
 for item in weather_channel.findall("item"):
     weather_item = deepcopy(item)
-
-    title = weather_item.find("title")
-    description = weather_item.findtext("description", "")
-
-    if title is not None:
-        icon = weather_icon(description)
-        title.text = f"{icon} {title.text or ''}".strip()
-
     channel.append(weather_item)
 
 # Retrieve today's New Jersey history feed
@@ -76,8 +49,7 @@ if history_channel is None:
 
 history_items = history_channel.findall("item")
 
-# Add only completed history stories.
-# Skip temporary research placeholders.
+# Add only completed history stories
 added_history = 0
 
 for item in history_items:
@@ -93,11 +65,6 @@ for item in history_items:
 
     if not is_pending:
         history_item = deepcopy(item)
-        title_element = history_item.find("title")
-
-        if title_element is not None:
-            title_element.text = "📜 " + (title_element.text or "").strip()
-
         channel.append(history_item)
         added_history += 1
 
